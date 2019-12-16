@@ -1,4 +1,5 @@
 {
   "dbURIOne": "mongodb+srv://",
-  "dbURITwo": "@cluster0-nqzfl.mongodb.net/test?retryWrites=true&w=majority"
+  "dbURITwo": "@cluster0-nqzfl.mongodb.net/test?retryWrites=true&w=majority",
+  "jwtSecret": "secret"
 }
