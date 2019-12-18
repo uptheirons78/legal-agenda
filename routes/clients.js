@@ -6,6 +6,7 @@ const { check, validationResult } = require('express-validator');
 // Models
 const User = require('../models/User');
 const Client = require('../models/Client');
+const Folder = require('../models/Folder');
 
 // @route     GET api/clients
 // @desc      Get All Users Clients
@@ -110,10 +111,25 @@ router.delete('/:id', auth, async (req, res) => {
     if (client.user.toString() !== req.user.id) {
       return res.status(401).json({ msg: 'Not Authorized' });
     }
-
+    // Remove Client
     await Client.findByIdAndRemove(req.params.id);
+    // Remove All Client's Folders
+    await Folder.deleteMany({ client: { $in: [req.params.id] } });
 
     res.json({ msg: 'Client Deleted' });
+  } catch (e) {
+    console.error(e.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route     GET api/clients/:id
+// @desc      Get A Single Client of a Specific User
+// @access    Private
+router.get('/:id', auth, async (req, res) => {
+  try {
+    const client = await Client.findById(req.params.id);
+    res.json(client);
   } catch (e) {
     console.error(e.message);
     res.status(500).send('Server Error');
